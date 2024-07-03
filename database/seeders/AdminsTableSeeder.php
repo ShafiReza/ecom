@@ -14,15 +14,15 @@ class AdminsTableSeeder extends Seeder
     {
         $adminRecords = [
             [
-                'id' => 1,
-                'name' => 'Super Admin',
-                'type' => 'superadmin',
-                'vendor_id' => 0,
-                'mobile' => '9800000000',
-                'email' => 'admin@admin.com',
+                'id' => 2,
+                'name' => 'shafi',
+                'type' => 'vendor',
+                'vendor_id' => 1,
+                'mobile' => '01947393823',
+                'email' => 's.reza3823@gmail.com',
                 'password' => bcrypt('123456'), // You can hash the password here
                 'image' => '',
-                'status' => 1
+                'status' => 0
             ]
         ];
         Admin::insert($adminRecords);

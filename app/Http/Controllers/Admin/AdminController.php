@@ -8,8 +8,7 @@ use PhpParser\Node\Expr\FuncCall;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Admin;
 use Illuminate\Support\Facades\Hash;
-use Intervention\Image\Facades\Image;
-use Intervention\Image\ImageServiceProvider;
+
 class AdminController extends Controller
 {
     public function dashboard(){
@@ -59,15 +58,15 @@ class AdminController extends Controller
             ];
             $this->validate($request, $rules,$customMessages);
 
-            if($request->hasfile('admin_image')){
+            if ($request->hasFile('admin_image')) {
                 $image_tmp = $request->file('admin_image');
-                if($image_tmp->isValid())
-                {
+                if ($image_tmp->isValid()) {
                     $extension = $image_tmp->getClientOriginalExtension();
-                    $imageName = rand(111,99999).''.$extension;
-                    $imagePath = 'admin/image/photo'.$imageName;
-                    \Image::make($image_tmp)->save($imagePath);
+                    $imageName = rand(111, 99999) . '.' . $extension;
+                    $imagePath = 'admin/images/photo/' . $imageName;
 
+                    // Move the file to the specified path
+                    $image_tmp->move(public_path('admin/images/photo'), $imageName);
                 }
             }
             Admin::where('id', Auth::guard('admin')->user()->id)->update(['name'=>$data['admin_name'],'mobile'=>$data['admin_mobile'], 'image'=>$imageName]);
