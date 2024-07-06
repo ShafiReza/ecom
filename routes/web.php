@@ -45,6 +45,7 @@ Route::prefix('/admin')->namespace('App\http\Controllers\Admin')->group(function
         Route::match(['get','post'],'update-admin-password', [AdminController::class, 'updateAdminPassword']);
         Route::post('check-admin-password', [AdminController::class, 'checkAdminPassword']);
         Route::match(['get','post'],'update-admin-details', [AdminController::class, 'updateAdminDetails']);
+        Route::match(['get','post'],'update-vendor-details/{slug}', [AdminController::class, 'updateVendorDetails']);
         Route::get('logout', [AdminController::class, 'logout']);
     });
 

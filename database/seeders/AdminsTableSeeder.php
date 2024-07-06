@@ -22,7 +22,7 @@ class AdminsTableSeeder extends Seeder
                 'email' => 's.reza3823@gmail.com',
                 'password' => bcrypt('123456'), // You can hash the password here
                 'image' => '',
-                'status' => 0
+                'status' => 1
             ]
         ];
         Admin::insert($adminRecords);

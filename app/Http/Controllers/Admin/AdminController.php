@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use PhpParser\Node\Expr\FuncCall;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Admin;
+use App\Models\Vendor;
 use Illuminate\Support\Facades\Hash;
 
 class AdminController extends Controller
@@ -73,6 +74,52 @@ class AdminController extends Controller
             return redirect()->back()->with('success_message', 'Admin details updated successfully!');
         }
         return view('admin.settings.update_admin_details');
+    }
+
+    public function updateVendorDetails($slug, Request $request){
+        if($slug=="personal"){
+            if($request->isMethod('post')){
+                $data = $request->all();
+                if($request->isMethod('post')){
+                    $data = $request->all();
+                    $rules = [
+                        'vendor_name'=>'required|regex:/^[\pL\s\-]+$/u',
+                        'vendor_mobile'=>'required|numeric'
+                    ];
+                    $customMessages = [
+                        'vendor_name.required' => 'Name is required',
+                        'vendor_name.regex' => 'Valid name is required',
+                        'vendor_mobile.required'=> 'Mobile is required',
+                        'vendor_mobile.numeric'=> 'Valid mobile is required'
+                    ];
+                    $this->validate($request, $rules,$customMessages);
+
+                    if ($request->hasFile('admin_image')) {
+                        $image_tmp = $request->file('admin_image');
+                        if ($image_tmp->isValid()) {
+                            $extension = $image_tmp->getClientOriginalExtension();
+                            $imageName = rand(111, 99999) . '.' . $extension;
+                            $imagePath = 'admin/images/photo/' . $imageName;
+
+                            // Move the file to the specified path
+                            $image_tmp->move(public_path('admin/images/photo'), $imageName);
+                        }
+                    }else {
+                        $imageName = ''; // Handle the case when there is no file uploaded
+                    }
+                    Admin::where('id', Auth::guard('admin')->user()->id)->update(['name'=>$data['vendor_name'],'mobile'=>$data['vendor_mobile'],  'image' => $imageName]);
+                    Vendor::where('id', Auth::guard('admin')->user()->vendor_id)->update(['name'=>$data['vendor_name'],'mobile'=>$data['vendor_mobile'],'address'=>$data['vendor_address'],
+                    'city'=>$data['vendor_city'],'state'=>$data['vendor_state'],'country'=>$data['vendor_country'],'pincode'=>$data['vendor_pincode']]);
+                    return redirect()->back()->with('success_message', 'Vendor details updated successfully!');
+                }
+            }
+            $vendorDetails = Vendor::where('id', Auth::guard('admin')->user()->vendor_id)->first()->toArray();
+
+        }else if($slug=="business"){
+
+        }else if($slug=="bank"){
+        }
+        return view('admin.settings.update_vendor_details')->with(compact('slug','vendorDetails'));
     }
     public function login(Request $request){
         if($request->isMethod('post')){
